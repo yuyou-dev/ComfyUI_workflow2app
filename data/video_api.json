@@ -1,0 +1,391 @@
+{
+  "4": {
+    "inputs": {
+      "ckpt_name": "adammixSDXLDoll_v11.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Load Checkpoint"
+    }
+  },
+  "5": {
+    "inputs": {
+      "width": 768,
+      "height": 1024,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage",
+    "_meta": {
+      "title": "Empty Latent Image"
+    }
+  },
+  "6": {
+    "inputs": {
+      "text": [
+        "11",
+        0
+      ],
+      "clip": [
+        "14",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "7": {
+    "inputs": {
+      "text": [
+        "11",
+        1
+      ],
+      "clip": [
+        "14",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "11": {
+    "inputs": {
+      "text_positive": "chibi:2,cute,Kawaii,(full body:2),Standing:2,shoe:2,(blue clean background),(Highly saturated background),PVC material, silicone material，standing character, soft smooth lighting, soft pastel colors, skottie young, 3d blender render, polycount, modular constructivism, pop surrealism, physically based rendering, square image, a man with black clothes",
+      "text_negative": "Glow, Wrinkles, Aging, Cock-eye,realist photo, Real Material",
+      "style": "sai-3d-model",
+      "log_prompt": true,
+      "style_positive": true,
+      "style_negative": true
+    },
+    "class_type": "SDXLPromptStyler",
+    "_meta": {
+      "title": "SDXL Prompt Styler"
+    }
+  },
+  "12": {
+    "inputs": {
+      "stop_at_clip_layer": -2,
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPSetLastLayer",
+    "_meta": {
+      "title": "CLIP Set Last Layer"
+    }
+  },
+  "13": {
+    "inputs": {
+      "toggle": true,
+      "mode": "simple",
+      "num_loras": 5,
+      "lora_1_name": "smiling.pt",
+      "lora_1_strength": 2,
+      "lora_1_model_strength": 1,
+      "lora_1_clip_strength": 1,
+      "lora_2_name": "age.pt",
+      "lora_2_strength": -1,
+      "lora_2_model_strength": 1,
+      "lora_2_clip_strength": 1,
+      "lora_3_name": "fix_hands.pt",
+      "lora_3_strength": 1,
+      "lora_3_model_strength": 1,
+      "lora_3_clip_strength": 1,
+      "lora_4_name": "looking_at_viewer.safetensors",
+      "lora_4_strength": 1,
+      "lora_4_model_strength": 1,
+      "lora_4_clip_strength": 1,
+      "lora_5_name": "3D模型丨可爱化SDXL版_v2.0.safetensors",
+      "lora_5_strength": 1,
+      "lora_5_model_strength": 1,
+      "lora_5_clip_strength": 1,
+      "lora_6_name": "sdxl_lightning_4step_lora.safetensors",
+      "lora_6_strength": 1,
+      "lora_6_model_strength": 1,
+      "lora_6_clip_strength": 1,
+      "lora_7_name": "None",
+      "lora_7_strength": 1,
+      "lora_7_model_strength": 1,
+      "lora_7_clip_strength": 1,
+      "lora_8_name": "None",
+      "lora_8_strength": 1,
+      "lora_8_model_strength": 1,
+      "lora_8_clip_strength": 1,
+      "lora_9_name": "None",
+      "lora_9_strength": 1,
+      "lora_9_model_strength": 1,
+      "lora_9_clip_strength": 1,
+      "lora_10_name": "None",
+      "lora_10_strength": 1,
+      "lora_10_model_strength": 1,
+      "lora_10_clip_strength": 1
+    },
+    "class_type": "easy loraStack",
+    "_meta": {
+      "title": "EasyLoraStack"
+    }
+  },
+  "14": {
+    "inputs": {
+      "model": [
+        "4",
+        0
+      ],
+      "clip": [
+        "12",
+        0
+      ],
+      "lora_stack": [
+        "13",
+        0
+      ]
+    },
+    "class_type": "CR Apply LoRA Stack",
+    "_meta": {
+      "title": "💊 CR Apply LoRA Stack"
+    }
+  },
+  "15": {
+    "inputs": {
+      "method": "fidelity",
+      "weight": 1,
+      "start_at": 0,
+      "end_at": 0.9,
+      "model": [
+        "34",
+        0
+      ],
+      "pulid": [
+        "19",
+        0
+      ],
+      "eva_clip": [
+        "20",
+        0
+      ],
+      "face_analysis": [
+        "21",
+        0
+      ],
+      "image": [
+        "47",
+        0
+      ]
+    },
+    "class_type": "ApplyPulid",
+    "_meta": {
+      "title": "Apply PuLID"
+    }
+  },
+  "17": {
+    "inputs": {
+      "preset": "PLUS FACE (portraits)",
+      "model": [
+        "14",
+        0
+      ]
+    },
+    "class_type": "IPAdapterUnifiedLoader",
+    "_meta": {
+      "title": "IPAdapter Unified Loader"
+    }
+  },
+  "19": {
+    "inputs": {
+      "pulid_file": "ip-adapter_pulid_sdxl_fp16.safetensors"
+    },
+    "class_type": "PulidModelLoader",
+    "_meta": {
+      "title": "Load PuLID Model"
+    }
+  },
+  "20": {
+    "inputs": {},
+    "class_type": "PulidEvaClipLoader",
+    "_meta": {
+      "title": "Load Eva Clip (PuLID)"
+    }
+  },
+  "21": {
+    "inputs": {
+      "provider": "CPU"
+    },
+    "class_type": "InstantIDFaceAnalysis",
+    "_meta": {
+      "title": "InstantID Face Analysis"
+    }
+  },
+  "31": {
+    "inputs": {
+      "seed": 795293524751815,
+      "steps": 20,
+      "cfg": 4,
+      "sampler_name": "euler_ancestral",
+      "scheduler": "karras",
+      "denoise": 1,
+      "preview_method": "auto",
+      "vae_decode": "true",
+      "model": [
+        "15",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "5",
+        0
+      ],
+      "optional_vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "KSampler (Efficient)",
+    "_meta": {
+      "title": "KSampler (Efficient)"
+    }
+  },
+  "34": {
+    "inputs": {
+      "weight": 1,
+      "weight_faceidv2": 1,
+      "weight_type": "ease in",
+      "combine_embeds": "concat",
+      "start_at": 0.3,
+      "end_at": 0.6,
+      "embeds_scaling": "V only",
+      "model": [
+        "17",
+        0
+      ],
+      "ipadapter": [
+        "17",
+        1
+      ],
+      "image": [
+        "47",
+        0
+      ]
+    },
+    "class_type": "IPAdapterFaceID",
+    "_meta": {
+      "title": "IPAdapter FaceID"
+    }
+  },
+  "37": {
+    "inputs": {
+      "filename_prefix": "cute_you",
+      "images": [
+        "31",
+        5
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save Image"
+    }
+  },
+  "39": {
+    "inputs": {
+      "video": "video/d0 (1).mp4",
+      "video_segment_frames": -1,
+      "transition_frames": 1,
+      "upload-preview": null,
+      "upload file": "video",
+      "$$comfy_animation_preview": {
+        "height": 345
+      }
+    },
+    "class_type": "LoadVideoAndSegment_",
+    "_meta": {
+      "title": "Load Video And Segment"
+    }
+  },
+  "40": {
+    "inputs": {
+      "source_image": [
+        "31",
+        5
+      ],
+      "driving_video": [
+        "39",
+        0
+      ]
+    },
+    "class_type": "LivePortraitNode",
+    "_meta": {
+      "title": "LivePortrait"
+    }
+  },
+  "41": {
+    "inputs": {
+      "index": 0,
+      "scenes_video": [
+        "40",
+        0
+      ]
+    },
+    "class_type": "ScenesNode_",
+    "_meta": {
+      "title": "Scenes Node"
+    }
+  },
+  "42": {
+    "inputs": {
+      "frame_rate": 30,
+      "loop_count": 0,
+      "filename_prefix": "AnimateDiff",
+      "format": "video/h264-mp4",
+      "pix_fmt": "yuv420p",
+      "crf": 19,
+      "save_metadata": true,
+      "pingpong": false,
+      "save_output": true,
+      "images": [
+        "41",
+        0
+      ]
+    },
+    "class_type": "VHS_VideoCombine",
+    "_meta": {
+      "title": "Video Combine 🎥🅥🅗🅢"
+    }
+  },
+  "43": {
+    "inputs": {
+      "index": 0,
+      "scenes_video": [
+        "39",
+        0
+      ]
+    },
+    "class_type": "ScenesNode_",
+    "_meta": {
+      "title": "Scenes Node"
+    }
+  },
+  "47": {
+    "inputs": {
+      "start": 0,
+      "length": 1,
+      "image": [
+        "43",
+        0
+      ]
+    },
+    "class_type": "ImageFromBatch+",
+    "_meta": {
+      "title": "🔧 Image From Batch"
+    }
+  }
+}
