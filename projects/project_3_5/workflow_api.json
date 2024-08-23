@@ -25,6 +25,7 @@
         "11",
         0
       ],
+      "speak_and_recognation": true,
       "clip": [
         "14",
         1
@@ -41,6 +42,7 @@
         "11",
         1
       ],
+      "speak_and_recognation": true,
       "clip": [
         "14",
         1
@@ -53,29 +55,16 @@
   },
   "11": {
     "inputs": {
-      "text_positive": "chibi:2,cute,Kawaii,(full body:2),Standing:2,shoe:2,(blue clean background),(Highly saturated background),PVC material, silicone material，standing character, soft smooth lighting, soft pastel colors, skottie young, 3d blender render, polycount, modular constructivism, pop surrealism, physically based rendering, square image, a man with black clothes",
+      "text_positive": "chibi:2,cute,Kawaii,(full body:2),Standing:2,shoe:2,(blue clean background),(Highly saturated background),PVC material, silicone material，standing character, soft smooth lighting, soft pastel colors, skottie young, 3d blender render, polycount, modular constructivism, pop surrealism, physically based rendering, square image, a man wear a suit and jeans",
       "text_negative": "Glow, Wrinkles, Aging, Cock-eye,realist photo, Real Material",
-      "style": "sai-3d-model",
-      "log_prompt": true,
-      "style_positive": true,
-      "style_negative": true
+      "style": "3d-model",
+      "log_prompt": "No",
+      "style_name": true,
+      "speak_and_recognation": true
     },
     "class_type": "SDXLPromptStyler",
     "_meta": {
       "title": "SDXL Prompt Styler"
-    }
-  },
-  "12": {
-    "inputs": {
-      "stop_at_clip_layer": -2,
-      "clip": [
-        "4",
-        1
-      ]
-    },
-    "class_type": "CLIPSetLastLayer",
-    "_meta": {
-      "title": "CLIP Set Last Layer"
     }
   },
   "13": {
@@ -103,7 +92,7 @@
       "lora_5_strength": 1,
       "lora_5_model_strength": 1,
       "lora_5_clip_strength": 1,
-      "lora_6_name": "sdxl_lightning_4step_lora.safetensors",
+      "lora_6_name": "cartoon_style.pt",
       "lora_6_strength": 1,
       "lora_6_model_strength": 1,
       "lora_6_clip_strength": 1,
@@ -136,8 +125,8 @@
         0
       ],
       "clip": [
-        "12",
-        0
+        "4",
+        1
       ],
       "lora_stack": [
         "13",
@@ -172,7 +161,7 @@
         0
       ],
       "image": [
-        "47",
+        "42",
         0
       ]
     },
@@ -221,7 +210,7 @@
   },
   "31": {
     "inputs": {
-      "seed": 795293524751815,
+      "seed": 939642571730518,
       "steps": 20,
       "cfg": 4,
       "sampler_name": "euler_ancestral",
@@ -248,6 +237,10 @@
       "optional_vae": [
         "4",
         2
+      ],
+      "script": [
+        "36",
+        0
       ]
     },
     "class_type": "KSampler (Efficient)",
@@ -273,13 +266,36 @@
         1
       ],
       "image": [
-        "47",
+        "42",
         0
       ]
     },
     "class_type": "IPAdapterFaceID",
     "_meta": {
       "title": "IPAdapter FaceID"
+    }
+  },
+  "36": {
+    "inputs": {
+      "upscale_type": "latent",
+      "hires_ckpt_name": "(use same)",
+      "latent_upscaler": "nearest-exact",
+      "pixel_upscaler": "4x-UltraSharp.pth",
+      "upscale_by": 1.5,
+      "use_same_seed": true,
+      "seed": 142878327312673,
+      "hires_steps": 12,
+      "denoise": 0.56,
+      "iterations": 1,
+      "use_controlnet": false,
+      "control_net_name": "CN-anytest_v4-marged.safetensors",
+      "strength": 1,
+      "preprocessor": "none",
+      "preprocessor_imgs": false
+    },
+    "class_type": "HighRes-Fix Script",
+    "_meta": {
+      "title": "HighRes-Fix Script"
     }
   },
   "37": {
@@ -297,22 +313,47 @@
   },
   "39": {
     "inputs": {
-      "video": "video/d0 (1).mp4",
+      "video": "video/d0.mp4",
       "video_segment_frames": -1,
-      "transition_frames": 1,
+      "transition_frames": 0,
       "upload-preview": null,
-      "upload file": "video",
-      "$$comfy_animation_preview": {
-        "height": 345
-      }
+      "upload file": "video"
     },
     "class_type": "LoadVideoAndSegment_",
     "_meta": {
       "title": "Load Video And Segment"
     }
   },
-  "40": {
+  "41": {
     "inputs": {
+      "index": 0,
+      "scenes_video": [
+        "39",
+        0
+      ]
+    },
+    "class_type": "ScenesNode_",
+    "_meta": {
+      "title": "Select Scene"
+    }
+  },
+  "42": {
+    "inputs": {
+      "start": 0,
+      "length": 1,
+      "image": [
+        "41",
+        0
+      ]
+    },
+    "class_type": "ImageFromBatch+",
+    "_meta": {
+      "title": "🔧 Image From Batch"
+    }
+  },
+  "43": {
+    "inputs": {
+      "driving_video_reverse_align": true,
       "source_image": [
         "31",
         5
@@ -324,25 +365,25 @@
     },
     "class_type": "LivePortraitNode",
     "_meta": {
-      "title": "LivePortrait"
+      "title": "Live Portrait"
     }
   },
-  "41": {
+  "45": {
     "inputs": {
       "index": 0,
       "scenes_video": [
-        "40",
+        "43",
         0
       ]
     },
     "class_type": "ScenesNode_",
     "_meta": {
-      "title": "Scenes Node"
+      "title": "Select Scene"
     }
   },
-  "42": {
+  "46": {
     "inputs": {
-      "frame_rate": 30,
+      "frame_rate": 24,
       "loop_count": 0,
       "filename_prefix": "AnimateDiff",
       "format": "video/h264-mp4",
@@ -352,40 +393,13 @@
       "pingpong": false,
       "save_output": true,
       "images": [
-        "41",
+        "45",
         0
       ]
     },
     "class_type": "VHS_VideoCombine",
     "_meta": {
       "title": "Video Combine 🎥🅥🅗🅢"
-    }
-  },
-  "43": {
-    "inputs": {
-      "index": 0,
-      "scenes_video": [
-        "39",
-        0
-      ]
-    },
-    "class_type": "ScenesNode_",
-    "_meta": {
-      "title": "Scenes Node"
-    }
-  },
-  "47": {
-    "inputs": {
-      "start": 0,
-      "length": 1,
-      "image": [
-        "43",
-        0
-      ]
-    },
-    "class_type": "ImageFromBatch+",
-    "_meta": {
-      "title": "🔧 Image From Batch"
     }
   }
 }

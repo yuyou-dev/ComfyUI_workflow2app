@@ -18,7 +18,7 @@ def upload():
         data = flask_request.get_json()
         text = data.get('text')
         print(text)
-        prompt_workflow = json.load(open('/root/data/default_api.json'))
+        prompt_workflow = json.load(open('./workflow_api.json'))
         # 替换输入文本
         prompt_workflow['6']['inputs']['text'] = text
         # 运行workflow
@@ -38,7 +38,7 @@ def get_output():
         return jsonify({'error': f'Error {str(e)}'}), 500
         
 if __name__ == '__main__':
-    app.run(debug=True, port=6008)
+    app.run(debug=True, port=6010)
 
 
 

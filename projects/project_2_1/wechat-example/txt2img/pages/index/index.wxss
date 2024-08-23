@@ -1,0 +1,16 @@
+.page_txt2img {
+  position: relative;
+  width: 100vw;
+  display: flex;
+  margin-bottom: 32rpx;
+  flex-direction: column;
+  align-items: center;
+}
+
+.img_box{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+}
