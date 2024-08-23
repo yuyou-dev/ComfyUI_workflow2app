@@ -1,0 +1,11 @@
+<view class="container">
+  <view class="page_txt2img">
+    <textarea type="text" style="border: 1px solid #ccc;border-radius:10px;padding: 12px;margin-bottom: 32rpx;" name="" bindinput="textInput" placeholder="请输入提示词" id="input_text" />
+    <button hidden="{{imgReturns}}" type="primary" bind:tap="uploadTextAndFetchImage">生成图片</button>
+  </view>
+  <view class="img_box" wx:if="{{imgReturns}}">
+    <image src="{{baseUrl}}/images/{{imgReturns}}" mode="aspectFill" style="width: 300px;height: 300px;margin-bottom: 16px;" />
+    <button bind:tap="downloadPic" type="primary" style="margin-bottom: 16px;">下载图片</button>
+    <button bind:tap="replay" type="primary">重新生成</button>
+  </view>
+</view>

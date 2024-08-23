@@ -1,0 +1,13 @@
+<view class="container">
+  <view class="page_img2img">
+    <view class="upload-button" bind:tap="chooseAndUploadImage">
+      <image wx:if="{{imgUpload}}" src="{{imgUpload}}" mode="aspectFit" style="width: 500rpx;height: 500rpx;" />
+      <view wx:else>+</view>
+    </view>
+  </view>
+  <view class="img_box" wx:if="{{imgReturns}}">
+    <image src="{{baseUrl}}/images/{{imgReturns}}" mode="aspectFill" style="width: 614rpx;height: 345rpx;margin-bottom: 32px;" />
+    <button bind:tap="downloadPic" type="primary" style="margin-bottom: 16px;">下载图片</button>
+    <button bind:tap="replay" type="primary">重新生成</button>
+  </view>
+</view>
