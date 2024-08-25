@@ -31,3 +31,32 @@ uploadImage() {
       }
     })
   },
+
+  // 通用请求方法
+  makeRequest(endpoint, method, data = {}) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: `${this.data.baseUrl}${endpoint}`,
+        method,
+        data,
+        timeout: 20000,
+        header: {
+          'content-type': 'application/json'
+        },
+        success: resolve,
+        fail: reject
+      });
+    });
+  },
+
+// 列队
+queue(prompt) {
+    return this.makeRequest('/api/prompt','POST',{prompt:prompt})
+    .then(res => {
+        if (res.data && res.data.prompt_id) {
+            return res.data.prompt_id;
+        } else {
+            throw new Error('Failed to get prompt_id');
+        }
+    });
+},
