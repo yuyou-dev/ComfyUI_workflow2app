@@ -1,155 +1,107 @@
+const prompt_json = require('../../data/api_json')
+
 Page({
   data: {
-    imgReturns: '',
-    imgUpload: '', // 存储上传的图片
-    baseUrl: "http://192.168.31.101:6010"
-
+    filename: '',
+    baseUrl: "http://192.168.10.85:6008" // 替换成ComfyUI的实际运行地址
   },
 
-  // 选择图片并上传
-  chooseAndUploadImage() {
-    wx.chooseImage({
-      count: 1,
-      sizeType: ['original', 'compressed'],
-      sourceType: ['album', 'camera'],
-      success: res => {
-        const filePath = res.tempFilePaths[0];
-        this.setData({
-          imgUpload: filePath
-        });
-        this.convertToBase64AndUpload(filePath);
-      },
-      fail: err => {
-        console.error('Image selection failed:', err);
-      }
+  // 根据 prompt_id 获取图片
+  fetchImageByPromptId(prompt_id) {
+    return new Promise((resolve, reject) => {
+      const fetchImage = () => {
+        this.makeRequest(`/api/history/${prompt_id}`, 'GET')
+          .then(res => {
+            if (res.data && res.data[prompt_id]) {
+              this.setData({
+                filename: res.data[prompt_id]["outputs"][9]['images'][0]['filename']
+              });
+              resolve(res.data[prompt_id]["outputs"][9]['images']);
+            } else {
+              setTimeout(fetchImage, 2000); // 轮询直到获取到图片
+            }
+          })
+          .catch(reject);
+      };
+      fetchImage();
     });
   },
 
-  // 读取文件并转换为Base64，然后上传并获取图片
-  convertToBase64AndUpload(filePath) {
-    const fileSystemManager = wx.getFileSystemManager();
-    fileSystemManager.readFile({
-      filePath: filePath,
-      encoding: 'base64', // 指定编码格式为base64
-      success: res => {
-        const timestamp = Math.floor(Date.now() / 1000);
-        const uploadData = {
-          image_name: `upload_${timestamp}`,
-          image_base64: res.data
-        };
-        this.uploadImageAndFetchImage(uploadData);
-      },
-      fail: err => {
-        wx.hideLoading();
-        console.error('Failed to read file:', err);
-      }
-    });
-  },
-
-  // 整体流程控制函数：上传图片并获取生成的图片
-  uploadImageAndFetchImage(uploadData) {
+  uploadImage() {
+    let that = this;
     wx.showLoading({ title: '请等待...' });
+    wx.chooseMedia({
+      count: 9,
+      mediaType: ['image','video'],
+      sourceType: ['album', 'camera'],
+      maxDuration: 30,
+      camera: 'back',
+      success (res) {
+        const tempFilePath = res.tempFiles[0].tempFilePath
+        wx.uploadFile({
+          url: `${that.data.baseUrl}/api/upload/image`,
+          filePath: tempFilePath,
+          name: 'image',
+          success: function(res) {
+            if (res.statusCode === 200) {
+              let res_data = JSON.parse(res.data)
+              prompt_json['11']['inputs']['image'] = res_data['name']
 
-    this.uploadImage(uploadData)
-      .then(prompt_id => this.fetchImageByPromptId(prompt_id))
-      .then(imgUrls => {
-        this.setData({
-          imgReturns: imgUrls,
-        });
-        wx.hideLoading();
-      })
-      .catch(error => {
-        wx.hideLoading();
-        console.log('Error:', error);
+              that.queue(prompt_json)
+              .then(that.fetchImageByPromptId)
+              .then(imgUrls => {
+                that.setData({ imgReturns: imgUrls });
+              })
+              .catch(error => {
+                console.error(error);
+              })
+              .finally(() => {
+                wx.hideLoading();
+              });  
+            } else {
+              console.error('Upload failed:', res.statusCode, res.data);
+            }
+          },
+          fail: function(error) {
+            console.error('Upload error:', error);
+          }
+        })
+      }
+    })
+  },
+
+  queue(prompt) {
+    return this.makeRequest('/api/prompt','POST',{prompt:prompt})
+      .then(res => {
+        if (res.data && res.data.prompt_id) {
+          return res.data.prompt_id;
+        } else {
+          throw new Error('Failed to get prompt_id');
+        }
       });
   },
 
-  // 上传图片并返回 prompt_id
-  uploadImage(uploadData) {
+  // 通用请求方法
+  makeRequest(endpoint, method, data = {}) {
     return new Promise((resolve, reject) => {
       wx.request({
-        url: `${this.data.baseUrl}/upload`,
-        method: 'POST',
-        data: uploadData,
-        timeout: 200000,
+        url: `${this.data.baseUrl}${endpoint}`,
+        method,
+        data,
+        timeout: 20000,
         header: {
           'content-type': 'application/json'
         },
-        success: res => {
-          if (res.data && res.data.prompt_id) {
-            resolve(res.data.prompt_id);
-          } else {
-            reject(new Error('Failed to get prompt_id'));
-          }
-        },
-        fail: error => {
-          reject(error);
-        }
+        success: resolve,
+        fail: reject
       });
     });
   },
 
-  // 根据 prompt_id 获取生成的图片并返回 imgUrls
-  fetchImageByPromptId(prompt_id) {
-    return new Promise((resolve, reject) => {
-      const fetch = () => {
-        wx.request({
-          url: `${this.data.baseUrl}/get_output`,
-          method: 'POST',
-          data: { prompt_id },
-          header: {
-            'content-type': 'application/json'
-          },
-          success: res => {
-            if (res.data.code === 10000) {
-              resolve(res.data.img_urls);
-            } else if (res.data.code === 10002) {
-              setTimeout(fetch, 2000); // 再次请求
-            } else {
-              reject(new Error('Failed to get image'));
-            }
-          },
-          fail: error => {
-            reject(error);
-          }
-        });
-      };
-      fetch();
-    });
-  },
-
-  // 下载图片的函数
-  downloadPic() {
-    wx.showLoading({ title: '请等待...' });
-
-    wx.downloadFile({
-      url: `${this.data.baseUrl}/images/${this.data.imgReturns}`,
-      success: res => {
-        wx.hideLoading();
-        if (res.statusCode === 200) {
-          wx.saveImageToPhotosAlbum({
-            filePath: res.tempFilePath,
-            success: () => wx.showToast({
-              title: '保存成功',
-              icon: 'success',
-              duration: 2000
-            }),
-            fail: () => wx.showToast({
-              title: '保存失败',
-              icon: 'none',
-              duration: 2000
-            })
-          });
-        }
-      }
-    });
-  },
-
-  // 重置状态以重新上传
-  replay() {
+  // 重置文件名
+  resetFilename() {
     this.setData({
-      imgReturns: '',
-      imgUpload: ''
+      filename: ''
     });
   }
 });
