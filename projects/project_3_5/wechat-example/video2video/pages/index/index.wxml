@@ -1,8 +1,10 @@
 <view class="container">
-
   <view class="page_img2video">
+  
     <view class="video_box" wx:if="{{!videoUrlOutput}}">
-      <video wx:if="{{videoUrl}}" src="{{videoUrl}}" />
+      
+      <video wx:if="{{videoUrl}}" src="{{videoUrl}}" bind:tap="chooseMedia"/>
+      <text wx:if="{{videoUrl}}">点击视频框可重新选择视频</text>
       <view wx:if="{{videoUrl}}" class="section">
         <picker mode="selector" range="{{genderArray}}" value="{{genderIndex}}" bindchange="onGenderChange">
           <view class="picker">
@@ -12,13 +14,14 @@
       </view>
 
       <view class="button_box">
-        <button class="choose_video" type="primary" bind:tap="chooseMedia">选择视频</button>
-
-        <button wx:if="{{videoUrl}}" class="confirm_upload" type="primary" bind:tap="uploadVideo">确定上传</button>
+        <!-- 按钮 -->
+        <button wx:if="{{!videoUrl}}" class="choose_video" type="primary" bind:tap="chooseMedia">选择视频</button>
+        <button wx:if="{{videoUrl}}" class="upload_video" type="primary" bind:tap="uploadVideo">上传视频</button>
+        <button wx:if="{{videoUrl}}" class="confirm_upload" disabled="{{!canUpload}}" type="primary" bind:tap="queuePrompt">确定视频</button>
       </view>
     </view>
     <view wx:if="{{videoUrlOutput}}" class="output_box">
-      <video class="output_video" src="{{baseUrl}}/video/{{videoUrlOutput}}" />
+      <video class="output_video" src="{{videoUrlOutput}}" />
       <button class="return_btn" type="primary" bind:tap="returnBtn">再来一次</button>
     </view>
   </view>
