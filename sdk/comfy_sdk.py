@@ -33,7 +33,7 @@ def run_workflow(selected_url,prompt_workflow):
 
 
 # 上传文件
-def upload_file(target_url,files,data):
+def upload_file(target_url,files,data=None):
     try:
         print(target_url)
         response = proxy_request(target_url,'/upload/image','POST', files=files,data=data)

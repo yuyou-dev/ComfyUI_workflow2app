@@ -1,0 +1,48 @@
+.view_box{
+  display: flex;
+  flex-direction: row;
+  top: 40%;
+  width: 640rpx;
+  left: 55rpx;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+.result{
+  height: 286rpx;
+  width: 286rpx;
+  margin-bottom: 18rpx;
+  /* background-image: url('../images/ele_1.png'); */
+  background-size: contain;
+}
+.completed{
+  position: absolute;
+  left: 50%;
+  top: 33%;
+  height: 61rpx;
+  width: 380rpx;
+  transform: translate(-50%);
+}
+.title{
+  position: absolute;
+  left: 50%;
+  top: 8.5%;
+  height: 109rpx;
+  width: 405rpx;
+  transform: translate(-50%);
+}
+.button_upload{
+  position: absolute;
+  left: 50%;
+  top: 18%;
+  height: 117rpx;
+  width: 425rpx;
+  transform: translate(-50%);
+}
+.btn_download{
+  position: absolute;
+  left: 50%;
+  top: 85.3%;
+  height: 149rpx;
+  width: 335rpx;
+  transform: translate(-50%);
+}

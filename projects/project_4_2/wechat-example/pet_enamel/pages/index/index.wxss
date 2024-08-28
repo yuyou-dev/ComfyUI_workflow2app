@@ -1,0 +1,56 @@
+.view_box{
+  display: flex;
+  flex-direction: row;
+  top: 40%;
+  width: 640rpx;
+  left: 55rpx;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+.dog_text{
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  width: 300rpx;
+  height: 43rpx;
+  transform: translate(-50%);
+}
+.dog_1{
+  position: absolute;
+  left: 50%;
+  top: 24%;
+  height: 15.3%;
+  transform: translate(-50%);
+}
+.button_upload{
+  position: absolute;
+  left: 50%;
+  top: 11%;
+  height: 117rpx;
+  width: 425rpx;
+  transform: translate(-50%);
+}
+.btn_download{
+  position: absolute;
+  left: 50%;
+  top: 85.3%;
+  height: 149rpx;
+  width: 335rpx;
+  transform: translate(-50%);
+}
+.view_box{
+  /* width: 405rpx; */
+  /* width: 430rpx; */
+  height: 30.8%;
+  left: 50%;
+  transform: translate(-50%);
+  top: 52.5%;
+  /* background-color: #fff; */
+
+}
+.result_img{
+  /* width: 430rpx;
+  height: 430rpx; */
+  height: 100%;
+  /* background-color: #f00; */
+}
