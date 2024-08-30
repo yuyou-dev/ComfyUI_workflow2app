@@ -1,9 +1,6 @@
 import random
 import json
 import requests
-
-
-
 # url检查服务器是否在线
 def is_server_online(url, timeout=5):
     try:

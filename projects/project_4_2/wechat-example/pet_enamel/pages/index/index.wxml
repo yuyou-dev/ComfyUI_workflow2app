@@ -1,15 +1,11 @@
 <!--index.wxml-->
-
 <view class="container">
   <image src="{{upload_src}}" mode="heightFix" class="dog_1" />
-
   <image src="../images/bg.png" mode="heightFix" style="height:100%;position: absolute;" />
   <image src="../images/btn_download.png" class="btn_download"  bind:tap="downloadImage"/>
   <image src="../images/btn_upload.png" class="button_upload" bind:tap="uploadImage" />
   <image src="../images/dog_text.png" class="dog_text" />
-
-  <view style="position: absolute;" class="view_box">
+  <view style="position: absolute;width: 450rpx;height: 450rpx;" class="view_box">
     <image mode="heightFix" src="{{result_img}}" class="result_img"/>
   </view>
-
 </view>
