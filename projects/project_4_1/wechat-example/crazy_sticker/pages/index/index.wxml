@@ -1,25 +1,13 @@
 <!--index.wxml-->
-
 <view class="container">
   <image src="../images/bg.png" mode="heightFix" style="height:100%;position: absolute;" />
   <image mode="heightFix" src="../images/completed.png" class="completed" />
   <image src="../images/ele.png" class="title" />
   <image src="../images/btn_upload.png" class="button_upload" bind:tap="uploadImage" />
   <image src="../images/btn_download.png" class="btn_download" bind:tap="saveFile" />
-
   <view style="position: absolute;" class="view_box">
-
-
     <view  wx:for="{{imglist}}" wx:for-item="img" wx:key="index" class="result ele_{{index+1}}" style="background-image: url('../images/ele_1.png');" >
       <image style="transform: scale(0.9);" src="{{img}}" class="result"/>
     </view>
-
-
   </view>
-
-  <!-- <view style="width:100%; height:calc(100vw * 1334 / 750);">
-      <image src="../images/bg.png" mode="heightFix" style="height:100%;" />
-    </view> -->
-
-  <!-- <image src="../images/bg.png" style="width: 750rpx;height:1334rpx;" mode=""/> -->
 </view>
