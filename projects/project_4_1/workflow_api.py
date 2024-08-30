@@ -60,10 +60,6 @@ def queue():
         data = flask_request.get_json()
         selected_index = data.get('selected_index')
         file_response_data = data.get('file_response_data')
-        
-        print(data)
-        print(selected_index)
-        print(file_response_data)
 
         # 加载并修改工作流参数
         prompt_workflow = json.load(open('./workflow_api.json'))
