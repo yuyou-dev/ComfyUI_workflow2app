@@ -23,5 +23,15 @@ def queue():
         return create_response(code=40002, message=f"Error: {str(e)}")
 
 
+# 统一的响应函数
+def create_response(data=None, code=10000, message="Success"):
+    response = {
+        "code": code,
+        "message": message
+    }
+    if data:
+        response["data"] = data
+    return jsonify(response), 200 if str(code).startswith('1000') else 500
+
 if __name__ == '__main__':
     app.run(port=6006)
