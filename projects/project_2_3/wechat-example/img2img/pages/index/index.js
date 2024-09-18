@@ -3,7 +3,7 @@ const prompt_json = require('../../data/api_json')
 Page({
   data: {
     filename: '',
-    baseUrl: "http://192.168.10.85:6008" // 替换成ComfyUI的实际运行地址
+    baseUrl: "https://u45708-9524-962502aa.westb.seetacloud.com:8443" // 替换成ComfyUI的实际运行地址
   },
 
   // 根据 prompt_id 获取图片

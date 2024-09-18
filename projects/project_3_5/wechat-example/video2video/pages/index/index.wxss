@@ -43,9 +43,7 @@
   justify-content: center;
 }
 
-.return_btn {
-  margin-top: 32px;
-}
+
 
 .output_video {
   width: 590rpx;

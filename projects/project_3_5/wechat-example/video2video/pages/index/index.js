@@ -1,4 +1,3 @@
-// index.js
 Page({
   data: {
     videoUrl: '',
@@ -6,8 +5,9 @@ Page({
     genderArray: ['男', '女'],
     genderIndex: 0,
     canUpload: false,
-    baseUrl: "http://192.168.3.189:6020",
-    selected_index: null
+    baseUrl: "http://192.168.1.65:6020",
+    selected_index: null,
+    file_response_data: null
   },
 
   onLoad() {
@@ -16,30 +16,14 @@ Page({
 
   // 初始化服务器
   initServer() {
-    wx.request({
-      url: `${this.data.baseUrl}/init`,
-      method: 'GET',
-      header: {
-        'content-type': 'application/json'
-      },
-      success: res => {
-        if (res.data.code === 10000) {
-          this.setData({
-            selected_index: res.data.data.selected_index
-          });
-          console.log('Selected index:', res.data.data.selected_index);
-        } else {
-          wx.showToast({
-            title: `Error: ${res.data.message}`,
-            icon: 'none',
-            duration: 2000
-          });
-        }
-      },
-      fail: res => {
-        console.error('Init request failed', res);
-      }
-    });
+    this.request('/init', 'GET', null)
+      .then(res => {
+        this.setData({
+          selected_index: res.data.selected_index
+        });
+        console.log('Selected index:', res.data.selected_index);
+      })
+      .catch(err => console.error('Init request failed', err));
   },
 
   // 性别选择器的变更
@@ -55,161 +39,100 @@ Page({
       count: 1,
       mediaType: ['video'],
       success: res => {
-        const videoUrl = res.tempFiles[0].tempFilePath;
         this.setData({
-          videoUrl: videoUrl
+          videoUrl: res.tempFiles[0].tempFilePath
         });
       },
-      fail: err => {
-        console.error('Video selection failed', err);
-      }
+      fail: err => console.error('Video selection failed', err)
     });
   },
 
   // 上传视频
   uploadVideo() {
-    const filePath = this.data.videoUrl;
-    if (!filePath) {
-      wx.showToast({
-        title: 'Please select a video first',
-        icon: 'none',
-        duration: 2000
-      });
-      return;
+    if (!this.data.videoUrl) {
+      return this.showError('Please select a video first');
     }
 
-    wx.showLoading({
-      title: '正在上传...',
-    });
-
-    wx.uploadFile({
-      url: `${this.data.baseUrl}/upload`,
-      filePath: filePath,
-      name: 'file',
-      formData: {
-        'selected_index': this.data.selected_index
-      },
-      success: res => {
-        const data = JSON.parse(res.data);
-        console.log(data)
-        if (data.code === 10000) {
-          this.setData({
-            canUpload: true,
-            file_response_data: data.data
-          })
-          wx.showToast({
-            title: 'Upload successful',
-            icon: 'success',
-            duration: 2000
-          });
-        } else {
-          wx.showToast({
-            title: `Error: ${data.message}`,
-            icon: 'none',
-            duration: 2000
-          });
-        }
-      },
-      fail: err => {
-        console.error('Upload failed', err);
-        wx.showToast({
-          title: 'Upload failed',
-          icon: 'none',
-          duration: 2000
-        });
-      },
-      complete: () => {
-        wx.hideLoading();
-      }
+    this.uploadFile(`${this.data.baseUrl}/upload`, this.data.videoUrl, {
+      'selected_index': this.data.selected_index
+    }).then(res => {
+      this.setData({
+        canUpload: true,
+        file_response_data: res.data
+      });
+      this.showToast('Upload successful', 'success');
+    }).catch(err => {
+      console.error('Upload failed', err);
+      this.showError('Upload failed');
     });
   },
 
   // 队列提示
   queuePrompt() {
+    if (!this.data.file_response_data) {
+      return this.showError('No file to process');
+    }
     wx.showLoading({
-      title: '正在生成...',
-    });
-
-    wx.request({
-      url: `${this.data.baseUrl}/queue`,
-      method: 'POST',
-      data: {
-        gender_index: this.data.genderIndex,
-        selected_index: this.data.selected_index,
-        file_response_data: this.data.file_response_data
-      },
-      header: {
-        'content-type': 'application/json'
-      },
-      success: res => {
-
-        if (res.data.code === 10000) {
-          this.getOutput(res.data.data.prompt_id);
-        } else {
-          wx.hideLoading();
-          wx.showToast({
-            title: `Error: ${res.data.message}`,
-            icon: 'none',
-            duration: 2000
-          });
-        }
-      },
-      fail: err => {
-        wx.hideLoading();
-
-        console.error('Queue prompt failed', err);
-        wx.showToast({
-          title: 'Queue prompt failed',
-          icon: 'none',
-          duration: 2000
-        });
-      }
+      title: '正在生成',
+    })
+    this.request('/queue', 'POST', {
+      gender_index: this.data.genderIndex,
+      selected_index: this.data.selected_index,
+      file_response_data: this.data.file_response_data
+    }).then(res => {
+      this.getOutput(res.data.prompt_id);
+    }).catch(err => {
+      this.showError('Queue prompt failed');
+      console.error('Queue prompt failed', err);
     });
   },
 
   // 获取输出
   getOutput(prompt_id) {
-    wx.request({
-      url: `${this.data.baseUrl}/get_output`,
-      method: 'POST',
-      data: {
-        prompt_id: prompt_id,
-        selected_index: this.data.selected_index
-      },
-      header: {
-        'content-type': 'application/json'
-      },
-      success: res => {
-        if (res.data.code === 10000) {
-          wx.hideLoading();
-
-          const filename = res.data.data.outputs_video.gifs[0].filename;
-          this.setData({
-            videoUrlOutput: `${this.data.baseUrl}/view?filename=${filename}&selected_index=${this.data.selected_index}`
-          });
-        } else if (res.data.code === 10002) {
-          setTimeout(() => {
-            this.getOutput(prompt_id);
-          }, 2000);
-        } else {
-          wx.hideLoading();
-
-          wx.showToast({
-            title: `Error: ${res.data.message}`,
-            icon: 'none',
-            duration: 2000
-          });
-        }
-      },
-      fail: err => {
-        console.error('Get output failed', err);
-        wx.showToast({
-          title: 'Get output failed',
-          icon: 'none',
-          duration: 2000
+ 
+    this.request('/get_output', 'POST', {
+      prompt_id: prompt_id,
+      selected_index: this.data.selected_index
+    }).then(res => {
+      console.log(res)
+      if (res.code === 10000) {
+        const filename = res.data.outputs_video.gifs[0].filename;
+        this.setData({
+          videoUrlOutput: `${this.data.baseUrl}/view?filename=${filename}&selected_index=${this.data.selected_index}`
         });
+        wx.hideLoading();
+      } else if (res.code === 10002) {
+        // 如果返回 10002，递归调用 getOutput，等待 2 秒后再次请求
+        setTimeout(() => {
+          this.getOutput(prompt_id);
+        }, 2000);
+      } else {
+        wx.hideLoading();
+        this.showError(res.message);
       }
+    }).catch(err => {
+      wx.hideLoading();
+      console.error('Get output failed', err);
+      this.showError('Get output failed');
     });
+  },
+
+
+  // 保存视频
+  saveVideo() {
+    if (!this.data.videoUrlOutput) {
+      return this.showError('No video to save');
+    }
+
+    this.downloadFile(this.data.videoUrlOutput)
+      .then(filePath => {
+        wx.saveVideoToPhotosAlbum({
+          filePath,
+          success: () => this.showToast('保存成功', 'success'),
+          fail: () => this.showError('保存失败')
+        });
+      })
+      .catch(err => console.error('Error downloading video:', err));
   },
 
   // 重置按钮
@@ -217,5 +140,89 @@ Page({
     this.setData({
       videoUrlOutput: ''
     });
+  },
+
+  // 通用request请求函数
+  request(url, method, data) {
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: `${this.data.baseUrl}${url}`,
+        method: method,
+        data: data,
+        header: {
+          'content-type': 'application/json'
+        },
+        success: res => {
+          if (res.data.code.toString().startsWith('1000')) {
+            resolve(res.data);
+          } else {
+            this.showError(res.data.message);
+            reject(new Error(res.data.message));
+          }
+        },
+        fail: err => {
+          this.showError('Request failed');
+          reject(err);
+        }
+      });
+    });
+  },
+
+  // 通用文件上传函数
+  uploadFile(url, filePath, formData) {
+    wx.showLoading({
+      title: '正在上传...',
+    });
+    return new Promise((resolve, reject) => {
+      wx.uploadFile({
+        url: url,
+        filePath: filePath,
+        name: 'file',
+        formData: formData,
+        success: res => {
+          const data = JSON.parse(res.data);
+          if (data.code === 10000) {
+            resolve(data);
+          } else {
+            this.showError(data.message);
+            reject(new Error(data.message));
+          }
+          wx.hideLoading();
+        },
+        fail: reject
+      });
+    });
+  },
+
+  // 通用文件下载函数
+  downloadFile(url) {
+    return new Promise((resolve, reject) => {
+      wx.downloadFile({
+        url: url,
+        success: res => {
+          if (res.statusCode === 200) {
+            resolve(res.tempFilePath);
+          } else {
+            reject(new Error(`Download failed with status code: ${res.statusCode}`));
+          }
+        },
+        fail: reject
+      });
+    });
+  },
+
+  // 通用showToast函数
+  showToast(title, icon = 'none', duration = 2000) {
+    wx.showToast({
+      title: title,
+      icon: icon,
+      duration: duration
+    });
+  },
+
+  // 错误处理函数
+  showError(message) {
+    wx.hideLoading();
+    this.showToast(`Error: ${message}`);
   }
 });
