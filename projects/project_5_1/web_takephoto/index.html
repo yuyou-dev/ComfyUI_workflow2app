@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>圣诞节照相馆</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <script src="./libs/jquery-2.1.3.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <main>
+            <div class="container">
+                <!-- 首页 -->
+                <div id="page1" class="page active" style="background-image: url('./assets/images/bg_1.png');">
+                    <img src="./assets/images/start.png" alt="start" id="startButton" class="start">
+                </div>
+                <!-- 拍照页面 -->
+                <div id="page2" class="page">
+                    <div id="page_video">
+                        <video id="video" playsinline autoplay width="1080" height="1920"></video>
+                    </div>
+                    <img src="./assets/images/button_2.png" alt="button_2" id="generateImageButton" class="button_2">
+                    <img src="./assets/images/bg_2.png" alt="" class="bg_2">
+                    <img src="./assets/images/loading.png" alt="" class="loading" id="loading">
+                </div>
+                <!-- 结果页面 -->
+                <div id="page3" class="page">
+                    <img src="./assets/images/button_3.png" alt="button_3" id="downloadButton" class="button_3">
+                    <div id="sliderOverlay">
+                        <img id="resultImage" alt="Generated Image" style="display:none; pointer-events: none;">
+                    </div>
+                    <img src="./assets/images/bg_3.png" alt="" class="bg_3">
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- 主逻辑代码 -->
+    <script src="./assets/js/app.js" type="module"></script>
+</body>
+</html>

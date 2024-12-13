@@ -22,7 +22,11 @@
     </view>
     <view wx:if="{{videoUrlOutput}}" class="output_box">
       <video class="output_video" src="{{videoUrlOutput}}" />
-      <button class="return_btn" type="primary" bind:tap="returnBtn">再来一次</button>
+      <view class="button_box">
+        <button class="save_video_btn" type="primary" bind:tap="saveVideo">保存视频</button>
+        <button class="return_btn" type="primary" bind:tap="returnBtn">再来一次</button>
+      </view>
+   
     </view>
   </view>
 </view>

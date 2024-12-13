@@ -1,0 +1,160 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    width: 1080px;
+    height: 1920px;
+}
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.upload-area {
+    border: 2px dashed #007bff;
+    border-radius: 5px;
+    width: 100%;
+    max-width: 300px;
+    height: 200px;
+    margin: 20px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+    background-color: #e6f2ff;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+
+@media (max-width: 600px) {
+    .upload-area {
+        max-width: 100%;
+    }
+}
+
+.page{
+    width: 1080px;
+    height: 1920px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+}
+.bg_2{
+    width: 1080px;
+    height: 1920px;
+    position: absolute;
+    z-index: 4;
+}
+.active {
+    display: block;
+}
+
+
+  .start {
+    position: absolute;
+    left: 386px;
+    top: 1739px;
+    width: 308px;
+    height: 115px;
+    z-index: 4;
+  }
+  
+
+  .text_1 {
+    position: absolute;
+    left: 258px;
+    top: 205px;
+    width: 565px;
+    height: 325px;
+    z-index: 11;
+  }
+  
+
+  .button_2 {
+  position: absolute;
+  left: 341px;
+  top: 1490px;
+  width: 379px;
+  height: 310px;
+  z-index: 8;
+}
+
+  
+
+  .button_3 {
+    position: absolute;
+    left: 250px;
+    top: 1625px;
+    width: 608px;
+    height: 189px;
+    z-index: 25;
+  }
+  
+
+  #page_video{
+
+    width: 1080px;
+    height: 1920px;
+    top: 0;
+    left: 0;
+    position: absolute;
+    z-index: 2;
+}
+
+#video{
+
+    object-fit: cover;
+}
+.per_img{
+    position: absolute;
+    width: 1080px;
+    height: 1920px;
+    top: 0px;
+    left: 0px;
+}
+#resultImage{
+    display: block;
+    height: 1412px;
+    position: absolute;
+    top: 223px;
+    left: 142px;
+    border-radius: 20px;
+    pointer-events: none;
+}
+.loading{
+    display: none;
+    position: absolute;
+    z-index: 9;
+    opacity: 0.8;
+}
+.bg_3{
+    position: absolute;
+}
